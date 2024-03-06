@@ -1,5 +1,6 @@
 pandas
 numpy
+dill
 scikit-learn
 dataclasses
 -e .

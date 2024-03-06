@@ -6,6 +6,9 @@ from src.logger import logging
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
 
+# import data_transformation
+from src.components import data_transformation
+
 @dataclass
 class dataIngestionConfig:
     train_data=os.path.join('artifacts',"train.csv")
@@ -37,7 +40,13 @@ class dataIngestion:
             logging.info("Data ingestion, complete")
 
             return (self.ingestion_config.train_data, self.ingestion_config.test_data)
+        
         except Exception as e:
             raise CustomException(e,sys)
         
+if __name__=="__main__":
+    obj=dataIngestion()
+    train_data, test_data=obj.initiate_data_ingestion()
 
+    transformation=data_transformation.DataTransformation()
+    transformation.initiate_data_transformation(train_data, test_data)
