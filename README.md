@@ -27,11 +27,11 @@ The data has no missing or duplicate values. It consist of 3 datatypes, int64, f
  10  estimated_salary  
  11  churn  
 
- ## 4.Unique Column Values:
+ ### 4.Unique Column Values:
 1.country - 'France' 'Spain' 'Germany'
 2.gender - 'Female' 'Male'
 
-## 5.Data Preprocessing and Feature engineering:
+### 5.Data Preprocessing and Feature engineering:
 
 1.OneHotEncoder- used for categorical variables
 2.StandardScaler- used for numerical variables to bring features to the same scale.
@@ -41,7 +41,7 @@ The data has no missing or duplicate values. It consist of 3 datatypes, int64, f
 
 Most features are not clearly explained, there are no units.
 
-## 7.Data Splitting Strategy and Evaluation Metrics
+### 7.Data Splitting Strategy and Evaluation Metrics
 
 I split the data into traing set and testing set, 20% for testing and 80% for training. I used "imblearn" to handle the imbalance classes.
 
