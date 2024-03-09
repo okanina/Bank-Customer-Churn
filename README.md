@@ -37,11 +37,11 @@ The data has no missing or duplicate values. It consist of 3 datatypes, int64, f
 2.StandardScaler- used for numerical variables to bring features to the same scale.
 3.ColumnTransformer- to transform the columns.
 
-##6.Data limitations:
+## 6.Data limitations:
 
 Most features are not clearly explained, there are no units.
 
-##7.Data Splitting Strategy and Evaluation Metrics
+## 7.Data Splitting Strategy and Evaluation Metrics
 
 I split the data into traing set and testing set, 20% for testing and 80% for training. I used "imblearn" to handle the imbalance classes.
 
