@@ -3,7 +3,7 @@ import pandas as pd
 import os, sys, dill
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
-from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import GridSearchCV
 
 from src.exception import CustomException
 
@@ -16,7 +16,7 @@ def save_object(file_path, obj):
     except Exception as e:
         raise CustomException(e, sys)
     
-def evaluate_model(X_train, y_train, X_test, y_test, models):
+def evaluate_model(X_train, y_train, X_test, y_test, models, params):
     try:
 
         under_sampler=RandomUnderSampler(random_state=42)
@@ -28,32 +28,50 @@ def evaluate_model(X_train, y_train, X_test, y_test, models):
         report={}
 
         for i in range(len(list(models))):
-            model_reg =list(models.values())[i]
+            model_reg =list(models.values())[i]            
+            para=params[list(models.keys())[i]]
+
+            gs=GridSearchCV(model_reg, param_grid=para, cv=3, n_jobs=1)
+            gs.fit(X_train, y_train)
+
+            model_reg.set_params(**gs.best_params_)
             model_reg.fit(X_train, y_train)
 
-            train_model_score = model_reg.score(X_train, y_train)
-            test_model_score = model_reg.score(X_test, y_test)
+            train_model_score = gs.score(X_train, y_train)
+            test_model_score = gs.score(X_test, y_test)
 
             report[list(models.keys())[i]] =(train_model_score, test_model_score)
 
             model_under=list(models.values())[i]
-            model_under.fit(X_train_under, y_train_under)
+            para=params[list(models.keys())[i]]
 
-            train_model_score = model_under.score(X_train, y_train)
-            test_model_score = model_under.score(X_test, y_test)
+            gs=GridSearchCV(model_under, param_grid=para, cv=3, n_jobs=1)
+            gs.fit(X_train_under, y_train_under)
+
+            model_under.set_params(**gs.best_params_)
+            model_under.fit(X_train, y_train)
+            
+            train_model_score = gs.score(X_train, y_train)
+            test_model_score = gs.score(X_test, y_test)
 
             report[list(models.keys())[i]] =(train_model_score, test_model_score )
 
                       
             model_over=list(models.values())[i]
-            model_over.fit(X_train_over, y_train_over)
+            para=params[list(models.keys())[i]]
 
-            train_model_score = model_over.score(X_train, y_train)
-            test_model_score = model_over.score(X_test, y_test)
+            gs=GridSearchCV(model_over, param_grid=para, cv=3, n_jobs=1)
+            gs.fit(X_train_under, y_train_under)
+
+            model_over.set_params(**gs.best_params_)
+            model_over.fit(X_train, y_train)
+
+            train_model_score = gs.score(X_train, y_train)
+            test_model_score = gs.score(X_test, y_test)
 
             report[list(models.keys())[i]] =(train_model_score, test_model_score)
 
-            return report
+        return report
 
     except Exception as e:
         raise CustomException(e, sys)

@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys, os
+from operator import itemgetter
 from dataclasses import dataclass
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
@@ -28,14 +29,29 @@ class ModelTrainer:
 
     def initiate_model_training(self, X_train, y_train, X_test, y_test):
         try:                             
-            models={"Logistic Regression": LogisticRegression(),
-                    "DecisionTree Classifier": DecisionTreeClassifier(),
-                    "RandomForest Classifier": RandomForestClassifier(),
+            models={"LogisticRegression": LogisticRegression(),
+                    "DecisionTreeClassifier": DecisionTreeClassifier(),
+                    "RandomForestClassifier": RandomForestClassifier(),
                     "GradientBoostingClassifier": GradientBoostingClassifier()}
             
-            model_report:dict=evaluate_model(X_train, y_train, X_test, y_test, models)
+            params={
 
-            best_model_score=max(sorted(model_report.values()))
+                    "LogisticRegression":{},
+                    "DecisionTreeClassifier":{"criterion":['gini', 'entropy', 'log_loss'],
+                                                "max_depth":range(10,50,10)},
+                    
+                    "RandomForestClassifier":{"n_estimators":range(25, 100, 25),
+                                                "max_depth":range(10,50,10)},
+
+                    "GradientBoostingClassifier": {
+                                                    "n_estimators":range(20,40,5),
+                                                    "max_depth":range(2,10)},
+                    }
+            
+            model_report:dict=evaluate_model(X_train, y_train, X_test, y_test, models, params=params)
+            
+            
+            best_model_score=sorted(model_report.values(), key= lambda score: score[1])[-1]
 
             best_model_name= list(model_report.keys())[list(model_report.values()).index(best_model_score)]
 
@@ -50,6 +66,8 @@ class ModelTrainer:
             predicted=best_model.predict(X_test)
 
             predicted_score=best_model.score(X_test, predicted)
+
+            print(f"{best_model} is the best model.")
 
             print(classification_report(y_test, best_model.predict(X_test)))
 
