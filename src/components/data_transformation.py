@@ -54,27 +54,29 @@ class DataTransformation:
 
             preprocessor_obj=self.get_data_transformer_obj()
 
-            target="churn"
-            train_features=train_df.drop(target, axis=1)
+            
+            train_features=list(train_df.columns.drop("churn"))
+            X_train=train_df[train_features]
+            y_train=train_df["churn"]
 
-            test_features=test_df.drop(target, axis=1)
+            test_features=list(test_df.columns.drop("churn"))
+            X_test=test_df[test_features]
+            y_test=test_df["churn"]
 
             logging.info("Dataset Splitting completed.")
                         
-            train_features_array=preprocessor_obj.fit_transform(train_features)
-            test_features_array=preprocessor_obj.transform(test_features)
+            X_train_array=preprocessor_obj.fit_transform(X_train)
+            X_test_array=preprocessor_obj.transform(X_test)
 
             logging.info("Data transformation completed.")
-            
-            train_array=np.c_[train_features_array, np.array(train_features)]
-
-            test_array=np.c_[test_features_array, np.array(test_features)]
 
             save_object(file_path=self.data_transformation_config.preprocessor_obj_file_path, obj=preprocessor_obj)
             
             logging.info("File saved.")
-            return (train_array, 
-                    test_array,
+            return (X_train_array,
+                    y_train, 
+                    X_test_array,
+                    y_test,
                     self.data_transformation_config.preprocessor_obj_file_path,
                 )
 

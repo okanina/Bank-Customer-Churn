@@ -1,6 +1,7 @@
 pandas
 numpy
 dill
+imblearn
 scikit-learn
 dataclasses
 -e .
